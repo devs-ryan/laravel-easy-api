@@ -1,0 +1,33 @@
+{
+    "name": "devs_ryan/laravel-easy-api",
+    "description": "Converts Laravel Easy Admin into a headless CMS",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Claxton",
+            "email": "rclaxton.dev@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DevsRyan\\LaravelEasyAdmin\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DevsRyan\\LaravelEasyAdmin\\LaravelEasyApiServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=7.2",
+        "laravel/framework": ">=7.0",
+        "intervention/image": "^2.5"
+    },
+    "minimum-stability": "dev"
+}
