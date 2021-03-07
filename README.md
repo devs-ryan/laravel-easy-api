@@ -1,7 +1,6 @@
-<h2 align="center">Laravel Easy Admin</h2>
+<h2 align="center">Laravel Easy Api</h2>
 <h3 align="center">~ A simple admin panel for Laravel projects.</h3>
 <br><br>
-<p align="center">Demo: http://easy-admin-demo.fullstack-ds.com (credentials: test@test.com | secret)</p>
 <p align="center"><img src="https://raw.githubusercontent.com/devs-ryan/img-storage/master/easy-admin-header.png"></p>
 <p align="center">
 <a target="_blank" href="https://laravel.com/"><img src="https://img.shields.io/badge/Built%20For-Laravel-orange" alt="Built For Laravel"></a>
@@ -10,11 +9,11 @@
 <a target="_blank" href="https://laravel.com/"><img src="https://img.shields.io/badge/Requires-Laravel%20%5E7.0-red" alt="Requires"></a>
 </p>
 
-## What is Laravel Easy Admin
+## What is Laravel Easy Api
 
-Laravel Easy Admin is a back end UI designed for developers, root users with decent database knowledge or basic projects. It is not meant to serve as a complete Admin panel with full capabilities (see <a href="https://nova.laravel.com/">Lavavel Nova</a> if this is what you are looking for). On the contrary it is mean to act as a basic admin panel, with limited customizability, that can get up and running within minutes.
+Laravel Easy Api is a back end UI designed for developers, root users with decent database knowledge or basic projects. It is not meant to serve as a complete Admin panel with full capabilities (see <a href="https://nova.laravel.com/">Lavavel Nova</a> if this is what you are looking for). On the contrary it is mean to act as a basic admin panel, with limited customizability, that can get up and running within minutes.
 
-Laravel Easy Admin leverages a powerful set of artisan commands to add/remove resources. This is combined with public files where functionality can be removed or added via commenting/uncommenting code which allows Easy Admin to give basic ability for customization. If you need a quick and dirty admin panel for your project, this package is for you! :)
+Laravel Easy Api leverages a powerful set of artisan commands to add/remove resources. This is combined with public files where functionality can be removed or added via commenting/uncommenting code which allows Easy Api to give basic ability for customization. If you need a quick and dirty admin panel for your project, this package is for you! :)
 
 
 ## Installation
@@ -27,61 +26,33 @@ Laravel Easy Admin leverages a powerful set of artisan commands to add/remove re
 
 #### Setting env variables
 The following optional URL variables can be set in the Laravel .env file:
-- `APP_URL` (provides a link back to your app on the login page nav bar)
-- `EASY_ADMIN_APP_NAME` (Change the name shown in the top left of the Easy Admin nav bar)
-- `EASY_ADMIN_SUPPORT_EMAIL` (Provide a help email address to your Easy Admin users)
-- `EASY_ADMIN_DEFAULT_NAMESPACE` (set true to user namespace App\Models)
+- `API_TOKEN` (will be sent with all requests to verify authentication Eg. `response = $axios.get('http://my-app-url/easy-api/index?api_token='.token')`)
 
-#### Creating an Easy Admin user
-- `php artisan easy-api:create-user`
-- Follow the prompts to create a new user account with Easy Admin access
+#### Generate a random API_TOKEN
+- TODO
 
-#### Remove a user from the database
-- `php artisan easy-api:remove-user`
-- Follow the prompts to remove a user from the database
-
-#### Grant an existing user Easy Admin Access
-- `php artisan easy-api:user`
-- Enter a user_id or email to grant access
-
-#### Remove an existing user from Easy Admin Access
-- `php artisan easy-api:user --remove`
-- Enter a user_id or email to remove access
-
-#### Add a model resource to Easy Admin
-After running this command a CRUD resource will be added to the Easy Admin UI for the model specified.
+#### Add a model resource to Easy Api
+After running this command a CRUD resource will be added to the Easy Api UI for the model specified.
 - `php artisan easy-api:add-model`
 - Follow the prompts for namespace E.G. "App" and model name E.G. "User"
-- This will generate a new file in the base projects app/EasyAdmin directory, where you can comment out any functionality you do not wish to provide to the Easy Admin UI
+- This will generate a new file in the base projects app/EasyAdmin directory, where you can comment out any functionality you do not wish to provide to the Easy Api UI
 
-#### Remove a model resource from Easy Admin
+#### Remove a model resource from Easy Api
 - `php artisan easy-api:remove-model`
 - Follow the prompts for namespace E.G. "App" and model name E.G. "User"
 - This will remove the model from showing in the UI and delete the app/EasyAdmin file for it as well
 
-#### Refresh a model resource in Easy Admin
+#### Refresh a model resource in Easy Api
 - `php artisan easy-api:refresh-model`
 - Follow the prompts for namespace E.G. "App" and model name E.G. "User"
 - This will reload the public file in the app/EasyAdmin directory to the default and load/remove any fields that have changed in the model
 
-#### Add all model resources to Easy Admin
+#### Add all model resources to Easy Api
 This is not currently working, but on my TODO list.
 
-#### Reset Easy Admin
-In case you would like to return Easy Admin to the original state, use the command below.
+#### Reset Easy Api
+In case you would like to return Easy Api to the original state, use the command below.
 - `php artisan easy-api:reset`
-
-#### List Image Sizes
-Lists the supported image sizes that are generated when uploading an image file.
-- `php artisan easy-api:image-sizes`
-
-#### Get Image Helper
-Used to retrieve an image that was created using Easy Admin (see size options using command above)
-- `easyImg($model_name, $field_name, $file_name, $size = 'original')`
-
-#### Get File Helper
-Used to retrieve a file that was created using Easy Admin
-- `easyFile($model_name, $field_name, $file_name)`
 
 ## Limitations
 This admin panel assumes that you follow the standard Laravel naming conventions for models and database tables. If you create migrations/models using `php artisan make:model {ModelName} -m` it should work, otherwise it may not. 
@@ -91,4 +62,4 @@ The users table is expected to contain some fields that ship with the Laravel ba
 All model resources must contain and `id` attribute in their database table for the routing to function.
 
 ## Licence
-Laravel Easy Admin is open-sourced software licensed under the [MIT license](LICENSE.md).
+Laravel Easy Api is open-sourced software licensed under the [MIT license](LICENSE.md).

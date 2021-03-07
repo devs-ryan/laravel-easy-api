@@ -428,6 +428,46 @@ class FileService
 
          return null;
     }
+
+    /**
+     * Get an image path
+     *
+     * @param string $model_name
+     * @param string $field_name
+     * @param string $file_name
+     * @param string $size
+     * @return string
+     */
+    public function getImagePath($model_name, $field_name, $file_name, $size = 'original') {
+
+        $image_sizes = [
+            'thumbnail',
+            'small',
+            'medium',
+            'large',
+            'xtra_large',
+            'square_thumbnail',
+            'square',
+            'square_large',
+            'original'
+        ];
+
+        if (!in_array($size, $image_sizes)) $size = 'original';
+
+        return '/devsryan/LaravelEasyAdmin/storage/img/' . $model_name . '-' .  $field_name . '/' . $size . '/' . $file_name;
+    }
+
+    /**
+     * Get an file path
+     *
+     * @param string $model_name
+     * @param string $field_name
+     * @param string $file_name
+     * @return string
+     */
+    public function getFilePath($model_name, $field_name, $file_name) {
+        return '/devsryan/LaravelEasyAdmin/storage/files/' . $model_name . '-' .  $field_name . '/' . $file_name;
+    }
 }
 
 
