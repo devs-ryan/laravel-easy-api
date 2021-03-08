@@ -1,9 +1,9 @@
 <?php
 
-namespace DevsRyan\LaravelEasyAdmin\Commands;
+namespace DevsRyan\LaravelEasyApi\Commands;
 
 use Illuminate\Console\Command;
-use DevsRyan\LaravelEasyAdmin\Services\FileService;
+use DevsRyan\LaravelEasyApi\Services\FileService;
 use Exception;
 
 
@@ -21,7 +21,7 @@ class ResetModelsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Reset the Easy Admin models file';
+    protected $description = 'Reset the Easy Api models file';
 
     /**
      * Helper Service.
@@ -63,7 +63,7 @@ class ResetModelsCommand extends Command
     public function handle()
     {
         $this->info("<<<!!!Info!!!>>>\nAt any time enter 'q', 'quit', or 'exit' to cancel.");
-        $continue = $this->ask("This will reset EasyAdmin completely, continue? [y]es or [n]o");
+        $continue = $this->ask("This will reset EasyApi completely, continue? [y]es or [n]o");
 
         //exit code check
         if (in_array($continue, $this->exit_commands)) {
@@ -80,7 +80,7 @@ class ResetModelsCommand extends Command
         $this->FileService->removeAppDirectory();
         $this->FileService->createAppDirectory();
         $this->FileService->resetAppModelList();
-        $this->info('EasyAdmin models reset successfully.');
+        $this->info('EasyApi models reset successfully.');
     }
 }
 

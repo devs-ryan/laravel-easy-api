@@ -33,17 +33,17 @@ The following optional URL variables can be set in the Laravel .env file:
 After running this command a CRUD resource will be added to the Easy Api UI for the model specified.
 - `php artisan easy-api:add-model`
 - Follow the prompts for namespace E.G. "App" and model name E.G. "User"
-- This will generate a new file in the base projects app/EasyAdmin directory, where you can comment out any functionality you do not wish to provide to the Easy Api UI
+- This will generate a new file in the base projects app/EasyApi directory, where you can comment out any functionality you do not wish to provide to the Easy Api UI
 
 #### Remove a model resource from Easy Api
 - `php artisan easy-api:remove-model`
 - Follow the prompts for namespace E.G. "App" and model name E.G. "User"
-- This will remove the model from showing in the UI and delete the app/EasyAdmin file for it as well
+- This will remove the model from showing in the UI and delete the app/EasyApi file for it as well
 
 #### Refresh a model resource in Easy Api
 - `php artisan easy-api:refresh-model`
 - Follow the prompts for namespace E.G. "App" and model name E.G. "User"
-- This will reload the public file in the app/EasyAdmin directory to the default and load/remove any fields that have changed in the model
+- This will reload the public file in the app/EasyApi directory to the default and load/remove any fields that have changed in the model
 
 #### Add all model resources to Easy Api
 This is not currently working, but on my TODO list.

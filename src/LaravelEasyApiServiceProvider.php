@@ -1,5 +1,5 @@
 <?php
-namespace DevsRyan\LaravelEasyAdmin;
+namespace DevsRyan\LaravelEasyApi;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,8 +13,6 @@ class LaravelEasyApiServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes.php');
-
-        $this->loadMigrationsFrom(__DIR__.'/Migrations');
 
         $this->publishes([
             __DIR__.'/FileTemplates/AppModelList.template' => app_path('EasyApi/AppModelList.php'),
@@ -38,9 +36,7 @@ class LaravelEasyApiServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->make('DevsRyan\LaravelEasyAdmin\Controllers\AdminController');
-        $this->app->make('DevsRyan\LaravelEasyAdmin\Controllers\AuthController');
-
-        $this->loadViewsFrom(__DIR__.'/Views', 'easy-admin');
+        $this->app->make('DevsRyan\LaravelEasyApi\Controllers\AdminController');
+        $this->app->make('DevsRyan\LaravelEasyApi\Controllers\AuthController');
     }
 }

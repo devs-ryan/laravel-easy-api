@@ -1,9 +1,9 @@
 <?php
 
-namespace DevsRyan\LaravelEasyAdmin\Commands;
+namespace DevsRyan\LaravelEasyApi\Commands;
 
 use Illuminate\Console\Command;
-use DevsRyan\LaravelEasyAdmin\Services\FileService;
+use DevsRyan\LaravelEasyApi\Services\FileService;
 use Exception;
 
 class RemoveModelCommand extends Command
@@ -20,7 +20,7 @@ class RemoveModelCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Remove a model from the Easy Admin UI';
+    protected $description = 'Remove a model from the Easy Api UI';
 
     /**
      * Exit Commands.
@@ -56,7 +56,7 @@ class RemoveModelCommand extends Command
     {
         //check AppModelList corrupted
         if ($this->FileService->checkIsModelListCorrupted()) {
-            $this->info("App\EasyAdmin\AppModelList.php is corrupt.\nRun php artisan easy-api:reset or correct manually to continue.");
+            $this->info("App\EasyApi\AppModelList.php is corrupt.\nRun php artisan easy-api:reset or correct manually to continue.");
             return;
         }
 
@@ -86,7 +86,7 @@ class RemoveModelCommand extends Command
 
         //check if model/namespace is valid
         $model_path = $namespace . $model;
-        $this->info('Removing Model from Easy Admin..' . $model_path);
+        $this->info('Removing Model from Easy Api..' . $model_path);
         if (!class_exists($model_path)) {
             $this->info('Model does not exist.. terminating.');
             return;
@@ -95,18 +95,18 @@ class RemoveModelCommand extends Command
         //check if package file has already (create otherwise)
         if ($this->FileService->checkModelExists($model_path)) {
             $this->FileService->removeModelFromList($namespace, $model);
-            $this->info('Removed EasyAdmin models list file..');
+            $this->info('Removed EasyApi models list file..');
         }
         else {
-            $this->info('Model not found in EasyAdmin models list, checking for \App\EasyAdmin file..');
+            $this->info('Model not found in EasyApi models list, checking for \App\EasyApi file..');
         }
         //check if App file exists
         if ($this->FileService->checkPublicModelExists($model_path)) {
             $this->FileService->removePublicModel($model_path);
-            $this->info('\App\EasyAdmin public file removed..');
+            $this->info('\App\EasyApi public file removed..');
         }
         else {
-            $this->info('\App\EasyAdmin public file not found..');
+            $this->info('\App\EasyApi public file not found..');
         }
 
         $this->info('Model removed successfully!');

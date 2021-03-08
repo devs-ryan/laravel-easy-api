@@ -1,9 +1,9 @@
 <?php
-namespace DevsRyan\LaravelEasyAdmin\Services;
+namespace DevsRyan\LaravelEasyApi\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-use DevsRyan\LaravelEasyAdmin\Services\FileService;
+use DevsRyan\LaravelEasyApi\Services\FileService;
 use Exception;
 
 

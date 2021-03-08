@@ -1,8 +1,8 @@
 <?php
 
-namespace DevsRyan\LaravelEasyAdmin\Commands;
-use DevsRyan\LaravelEasyAdmin\Services\FileService;
-use DevsRyan\LaravelEasyAdmin\Services\HelperService;
+namespace DevsRyan\LaravelEasyApi\Commands;
+use DevsRyan\LaravelEasyApi\Services\FileService;
+use DevsRyan\LaravelEasyApi\Services\HelperService;
 
 use Illuminate\Console\Command;
 
@@ -20,7 +20,7 @@ class AddAllCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Add all models within app to the Easy Admin GUI';
+    protected $description = 'Add all models within app to the Easy Api GUI';
 
     /**
      * Exit Commands.
@@ -50,7 +50,7 @@ class AddAllCommand extends Command
     {
         //check AppModelList corrupted
         if ($this->FileService->checkIsModelListCorrupted()) {
-            $this->info("App\EasyAdmin\AppModelList.php is corrupt.\nRun php artisan easy-api:reset or correct manually to continue.");
+            $this->info("App\EasyApi\AppModelList.php is corrupt.\nRun php artisan easy-api:reset or correct manually to continue.");
             return;
         }
 
@@ -82,7 +82,7 @@ class AddAllCommand extends Command
 
                 //check if model/namespace is valid
                 $model_path = $namespace . $model;
-                $this->info('Adding Model to Easy Admin..' . $model_path);
+                $this->info('Adding Model to Easy Api..' . $model_path);
                 if (!class_exists($model_path)) {
                     $this->info('Model does not exist.. terminating.');
                     return;
@@ -96,26 +96,26 @@ class AddAllCommand extends Command
 
                 //check if package file has already (create otherwise)
                 if ($this->FileService->checkModelExists($model_path)) {
-                    $this->info('Model already added to EasyAdmin, checking for \App\EasyAdmin file..');
+                    $this->info('Model already added to EasyApi, checking for \App\EasyApi file..');
                 }
                 else {
                     $this->FileService->addModelToList($namespace, $model);
-                    $this->info('Model added to EasyAdmin models list file..');
+                    $this->info('Model added to EasyApi models list file..');
                 }
                 //check if App file exists already (create otherwise)
                 if ($this->FileService->checkPublicModelExists($model_path)) {
-                    $this->info('\App\EasyAdmin public file already exists..');
+                    $this->info('\App\EasyApi public file already exists..');
                 }
                 else {
                     $this->FileService->addPublicModel($model_path);
-                    $this->info('\App\EasyAdmin public file created..');
+                    $this->info('\App\EasyApi public file created..');
                 }
 
                 $this->info("\nModel `" . $model . "` added successfully!\n");
             }
         }
 
-        $this->info("=====\nNOTE:\n=====\nYou must setup your pages/posts and partials manually\ninside `EasyAdmin/AppModelList.php` file using the add-all command.");
+        $this->info("=====\nNOTE:\n=====\nYou must setup your pages/posts and partials manually\ninside `EasyApi/AppModelList.php` file using the add-all command.");
     }
 
     /**

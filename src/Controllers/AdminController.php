@@ -1,11 +1,11 @@
 <?php
-namespace DevsRyan\LaravelEasyAdmin\Controllers;
+namespace DevsRyan\LaravelEasyApi\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use DevsRyan\LaravelEasyAdmin\Services\HelperService;
-use DevsRyan\LaravelEasyAdmin\Services\ValidationService;
+use DevsRyan\LaravelEasyApi\Services\HelperService;
+use DevsRyan\LaravelEasyApi\Services\ValidationService;
 use Auth;
 
 class AdminController extends Controller
@@ -35,7 +35,7 @@ class AdminController extends Controller
         $this->helperService = new HelperService;
         $this->validationService = new ValidationService;
 
-        //EasyAdmin Middleware
+        //EasyApi Middleware
         $this->middleware(function ($request, $next) {
             if (Auth::check()) {
                 if (Auth::user()->is_easy_admin) {
@@ -44,12 +44,12 @@ class AdminController extends Controller
                 else {
                     Auth::logout();
                     $request->session()->flush();
-                    return redirect('/easy-admin/login')
-                        ->with('message', 'Access Denied! Request Easy Admin permission to continue.');
+                    return redirect('/easy-api/login')
+                        ->with('message', 'Access Denied! Request Easy Api permission to continue.');
                 }
 
             }
-            return redirect('/easy-admin/login');
+            return redirect('/easy-api/login');
         });
     }
 
@@ -91,7 +91,7 @@ class AdminController extends Controller
         $nav_items = $this->helperService->getModelsForNav();
         $partials = $this->helperService->getAllPartialModels();
         $partial_models = $this->helperService->stripParentFromPartials($partials);
-        $appModel = "App\\EasyAdmin\\" . $model;
+        $appModel = "App\\EasyApi\\" . $model;
         $index_columns = $appModel::index();
         $allowed = $appModel::allowed();
         $parent_id = ($request->parent_id && ctype_digit($request->parent_id) && intval($request->parent_id) > 0)
@@ -172,7 +172,7 @@ class AdminController extends Controller
         $nav_items = $this->helperService->getModelsForNav();
         $partials = $this->helperService->getAllPartialModels();
         $partial_models = $this->helperService->stripParentFromPartials($partials);
-        $appModel = "App\\EasyAdmin\\" . $model;
+        $appModel = "App\\EasyApi\\" . $model;
         $model_partials = $this->helperService->getPartials($model);
         $parent_id = ($request->parent_id && ctype_digit($request->parent_id) && intval($request->parent_id) > 0)
             ? $request->parent_id : null;
@@ -229,7 +229,7 @@ class AdminController extends Controller
         $url_model = $model;
         $model_path = $this->helperService->convertUrlModel($url_model);
         $model = $this->helperService->stripPathFromModel($model_path);
-        $appModel = "App\\EasyAdmin\\" . $model;
+        $appModel = "App\\EasyApi\\" . $model;
 
         //check allowed
         $allowed = $appModel::allowed();
@@ -247,16 +247,16 @@ class AdminController extends Controller
 
         //return redirect to edit when submit + add partials clicked
         if ($request->has('partial_redirect_easy_admin') && $response['record'] !== null) {
-            return redirect('/easy-admin/'. $url_model . '/' . $response['record']->id .'/edit' . $redirect_parent_id)
+            return redirect('/easy-api/'. $url_model . '/' . $response['record']->id .'/edit' . $redirect_parent_id)
                 ->with('message', $response['message']);
         }
 
         // create + redirect back to create form
         if ($response['record'] === null)
-            return redirect('/easy-admin/'. $url_model .'/create' . $redirect_parent_id)
+            return redirect('/easy-api/'. $url_model .'/create' . $redirect_parent_id)
                 ->withInput()->with('message', $response['message']);
         else
-            return redirect('/easy-admin/'. $url_model .'/create' . $redirect_parent_id)
+            return redirect('/easy-api/'. $url_model .'/create' . $redirect_parent_id)
                 ->with('message', $response['message']);
     }
 
@@ -277,7 +277,7 @@ class AdminController extends Controller
         $nav_items = $this->helperService->getModelsForNav();
         $partials = $this->helperService->getAllPartialModels();
         $partial_models = $this->helperService->stripParentFromPartials($partials);
-        $appModel = "App\\EasyAdmin\\" . $model;
+        $appModel = "App\\EasyApi\\" . $model;
         $model_partials = $this->helperService->getPartials($model);
         $parent_id = ($request->parent_id && ctype_digit($request->parent_id) && intval($request->parent_id) > 0)
             ? $request->parent_id : null;
@@ -339,7 +339,7 @@ class AdminController extends Controller
         $url_model = $model;
         $model_path = $this->helperService->convertUrlModel($url_model);
         $model = $this->helperService->stripPathFromModel($model_path);
-        $appModel = "App\\EasyAdmin\\" . $model;
+        $appModel = "App\\EasyApi\\" . $model;
         $allowed = $appModel::allowed();
 
         //check allowed
@@ -360,7 +360,7 @@ class AdminController extends Controller
         }
 
         //return redirect
-        return redirect('/easy-admin/'. $url_model .'/'. $id .'/edit' . $redirect_parent_id)
+        return redirect('/easy-api/'. $url_model .'/'. $id .'/edit' . $redirect_parent_id)
             ->with('message', $message);
     }
 
@@ -378,7 +378,7 @@ class AdminController extends Controller
         $url_model = $model;
         $model_path = $this->helperService->convertUrlModel($url_model);
         $model = $this->helperService->stripPathFromModel($model_path);
-        $appModel = "App\\EasyAdmin\\" . $model;
+        $appModel = "App\\EasyApi\\" . $model;
         $allowed = $appModel::allowed();
 
         //check allowed
@@ -403,7 +403,7 @@ class AdminController extends Controller
         }
 
         //return redirect
-        return redirect('/easy-admin/'. $url_model . '/index' . $redirect_parent_id)
+        return redirect('/easy-api/'. $url_model . '/index' . $redirect_parent_id)
             ->with('message', $message);
     }
 

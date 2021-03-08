@@ -1,8 +1,8 @@
 <?php
-namespace DevsRyan\LaravelEasyAdmin\Services;
+namespace DevsRyan\LaravelEasyApi\Services;
 
 use Illuminate\Support\Facades\DB;
-use DevsRyan\LaravelEasyAdmin\Services\HelperService;
+use DevsRyan\LaravelEasyApi\Services\HelperService;
 use Intervention\Image\Facades\Image;
 use Exception;
 use Throwable;
@@ -100,7 +100,7 @@ class FileService
      */
     public function resetAppModelList()
     {
-        $write_path = app_path('EasyAdmin/AppModelList.php');
+        $write_path = app_path('EasyApi/AppModelList.php');
         file_put_contents($write_path, $this->app_model_list_template) or die("Unable to write to file!");
     }
 
@@ -135,7 +135,7 @@ class FileService
     }
 
     /**
-     * Add Model into EasyAdmin models list
+     * Add Model into EasyApi models list
      *
      * @param string $namespace, $model, $type, $type_target
      * @return void
@@ -143,7 +143,7 @@ class FileService
     public function addModelToList($namespace, $model, $type = 'None', $type_target = null)
     {
         //add model to AppModelList file
-        $path = app_path('EasyAdmin/AppModelList.php');
+        $path = app_path('EasyApi/AppModelList.php');
 
         $package_file = file_get_contents($path) or die("Unable to open file!");
 
@@ -198,14 +198,14 @@ class FileService
     }
 
     /**
-     * Remove Model from EasyAdmin models list
+     * Remove Model from EasyApi models list
      *
      * @param string $namespace, $model
      * @return void
      */
     public function removeModelFromList($namespace, $model)
     {
-        $path = app_path('EasyAdmin/AppModelList.php');
+        $path = app_path('EasyApi/AppModelList.php');
         $input_lines = file_get_contents($path) or die("Unable to open file!");
         $overwrite_string = preg_replace('/^.*(\.)?'.$model.'\',\n/m', '', $input_lines);
         file_put_contents($path, $overwrite_string) or die("Unable to write to file!");
@@ -220,7 +220,7 @@ class FileService
     public function addPublicModel($model_path)
     {
         $model = $this->helperService->stripPathFromModel($model_path);
-        $write_path = app_path() . '/EasyAdmin/' . $model . '.php';
+        $write_path = app_path() . '/EasyApi/' . $model . '.php';
 
         //get attributes
         $record = new $model_path;
@@ -249,7 +249,7 @@ class FileService
     public function removePublicModel($model_path)
     {
         $model = $this->helperService->stripPathFromModel($model_path);
-        $write_path = app_path() . '/EasyAdmin/' . $model . '.php';
+        $write_path = app_path() . '/EasyApi/' . $model . '.php';
         unlink($write_path);
     }
 
@@ -281,12 +281,12 @@ class FileService
 
 
     /**
-     * Remove the App/EasyAdmin directory
+     * Remove the App/EasyApi directory
      *
      * @return void
      */
     public function removeAppDirectory() {
-        $dir = app_path() . '/EasyAdmin';
+        $dir = app_path() . '/EasyApi';
 
         $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it,
@@ -302,104 +302,14 @@ class FileService
     }
 
     /**
-     * Create the App/EasyAdmin directory
+     * Create the App/EasyApi directory
      *
      * @return void
      */
     public function createAppDirectory() {
-        $dir = app_path() . '/EasyAdmin';
+        $dir = app_path() . '/EasyApi';
         if (!file_exists($dir)) {
             mkdir($dir);
-        }
-    }
-
-    /**
-     * Store an uploaded file and save the filename in DB
-     *
-     * @param Request $request
-     * @param Model $record
-     * @param string $field_name
-     * @param string $model
-     * @return void
-     */
-    public function storeUploadedFile($request, $record, $field_name, $model) {
-        $file = $request->file($field_name);
-        $filename = sha1(time()) . '.' . $file->extension();
-
-        // set file name in DB
-        $record->$field_name = $filename;
-
-        // check if file is not an image
-        $image_info = @getimagesize($file);
-        if($image_info == false) {
-            $original_path = public_path() . '/devsryan/LaravelEasyAdmin/storage/files/' . $model . '-' .  $field_name;
-            $file->move($original_path, $filename);
-            return;
-        }
-
-
-        // save original image
-        $original_path = public_path() . '/devsryan/LaravelEasyAdmin/storage/img/' . $model . '-' .  $field_name . '/original';
-        $file->move($original_path, $filename);
-
-        foreach($this->image_sizes as $name => $size) {
-            if ($name == 'original') continue;
-
-            $width = explode("|", $size)[0];
-            $height = explode("|", $size)[1];
-
-            $image_resize = Image::make($original_path . '/' . $filename);
-
-            if ($height != 'auto') {
-                $image_resize->fit($width, $height);
-            }
-            else {
-                // resize the image to a width of 300 and constrain aspect ratio (auto height)
-                $image_resize->resize($width, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-            }
-
-            $path = public_path() . '/devsryan/LaravelEasyAdmin/storage/img/' . $model . '-' .  $field_name . '/' . $name;
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-            $image_resize->save($path . '/' . $filename);
-        }
-    }
-
-    /**
-     * Unlink files from field
-     *
-     * @param model $model
-     * @param string $model_name
-     * @param array $file_fields
-     * @return void
-     */
-    public function unlinkFiles($model, $model_name, $file_fields, $target = null) {
-        $attributes = $model->attributesToArray();
-
-        foreach($attributes as $field_name => $value) {
-
-            if ($target !== null && $field_name != $target) continue; // Do not erase file when targetting a specific file that needs erased
-
-            if (in_array($field_name, $file_fields)) {
-
-                // unlink all file paths
-                $path = public_path() . '/devsryan/LaravelEasyAdmin/storage/files/' . $model_name . '-' .  $field_name;
-                if (file_exists($path . '/' . $value)) {
-                    unlink($path . '/' . $value);
-                }
-
-
-                // unlink all image paths
-                foreach($this->image_sizes as $name => $size) {
-                    $path = public_path() . '/devsryan/LaravelEasyAdmin/storage/img/' . $model_name . '-' .  $field_name . '/' . $name;
-                    if (file_exists($path . '/' . $value)) {
-                        unlink($path . '/' . $value);
-                    }
-                }
-            }
         }
     }
 
@@ -414,16 +324,15 @@ class FileService
     public static function getFileLink($model_name, $field_name, $value) {
 
         // check if is file
-        $path = public_path() . '/devsryan/LaravelEasyAdmin/storage/files/' . $model_name . '-' .  $field_name;
+        $path = public_path() . '/devsryan/LaravelEasyApi/storage/files/' . $model_name . '-' .  $field_name;
         if (file_exists($path . '/' . $value)) {
-            return '/devsryan/LaravelEasyAdmin/storage/files/' . $model_name . '-' .  $field_name . '/' . $value;
+            return '/devsryan/LaravelEasyApi/storage/files/' . $model_name . '-' .  $field_name . '/' . $value;
         }
 
-        // check
-         // unlink all image paths
-         $path = public_path() . '/devsryan/LaravelEasyAdmin/storage/img/' . $model_name . '-' .  $field_name . '/original';
+        // check if is image
+         $path = public_path() . '/devsryan/LaravelEasyApi/storage/img/' . $model_name . '-' .  $field_name . '/original';
          if (file_exists($path . '/' . $value)) {
-             return '/devsryan/LaravelEasyAdmin/storage/img/' . $model_name . '-' .  $field_name . '/original/' . $value;
+             return '/devsryan/LaravelEasyApi/storage/img/' . $model_name . '-' .  $field_name . '/original/' . $value;
          }
 
          return null;
@@ -440,21 +349,9 @@ class FileService
      */
     public function getImagePath($model_name, $field_name, $file_name, $size = 'original') {
 
-        $image_sizes = [
-            'thumbnail',
-            'small',
-            'medium',
-            'large',
-            'xtra_large',
-            'square_thumbnail',
-            'square',
-            'square_large',
-            'original'
-        ];
+        if (!in_array($size, $this->image_sizes)) $size = 'original';
 
-        if (!in_array($size, $image_sizes)) $size = 'original';
-
-        return '/devsryan/LaravelEasyAdmin/storage/img/' . $model_name . '-' .  $field_name . '/' . $size . '/' . $file_name;
+        return '/devsryan/LaravelEasyApi/storage/img/' . $model_name . '-' .  $field_name . '/' . $size . '/' . $file_name;
     }
 
     /**
@@ -466,7 +363,7 @@ class FileService
      * @return string
      */
     public function getFilePath($model_name, $field_name, $file_name) {
-        return '/devsryan/LaravelEasyAdmin/storage/files/' . $model_name . '-' .  $field_name . '/' . $file_name;
+        return '/devsryan/LaravelEasyApi/storage/files/' . $model_name . '-' .  $field_name . '/' . $file_name;
     }
 }
 
