@@ -55,9 +55,9 @@ class InitCommand extends Command
      */
     public function handle()
     {
-        $this->info("<<<!!!Info!!!>>>\nAt any time enter 'q', 'quit', or 'exit' to cancel.");
 
         if (!$this->FileService->checkIsModelListCorrupted()) {
+            $this->info("<<<!!!Info!!!>>>\nAt any time enter 'q', 'quit', or 'exit' to cancel.");
             $continue = $this->ask("This will reset EasyApi completely, continue? [y]es or [n]o");
 
             //continue check
