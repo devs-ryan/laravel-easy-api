@@ -38,6 +38,5 @@ class LaravelEasyApiServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->make('DevsRyan\LaravelEasyApi\Controllers\AdminController');
-        $this->app->make('DevsRyan\LaravelEasyApi\Controllers\AuthController');
     }
 }
