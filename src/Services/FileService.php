@@ -253,6 +253,20 @@ class FileService
         unlink($write_path);
     }
 
+    /**
+     * Copy All files from EasyAdmin to to EasyApi and change namespace
+     *
+     * @return void
+     */
+    public function initFromEasyAdmin() {
+        $read_path = app_path() . '/EasyAdmin/';
+        $write_path = app_path() . '/EasyApi/';
+
+        $files = scandir($read_path);
+        var_dump($files);
+
+    }
+
     /////////////////////////////////////
     //FILTER FUNCTIONS FOR ABOVE METHOD//
     /////////////////////////////////////
