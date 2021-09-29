@@ -269,11 +269,12 @@ class FileService
             if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 $file_contents = file_get_contents($read_path . $file) or die("Unable to open file!");
                 $write_contents = str_replace('EasyAdmin', 'EasyApi', $file_contents);
-                $write_contents = str_replace(" 'create'", " //'create'", $file_contents);
-                $write_contents = str_replace(" 'update'", " //'update'", $file_contents);
-                $write_contents = str_replace(" 'delete'", " //'delete'", $file_contents);
+                $write_contents = str_replace("'create'", " //'create'", $write_contents);
+                $write_contents = str_replace("'update'", " //'update'", $write_contents);
+                $write_contents = str_replace("'delete'", " //'delete'", $write_contents);
+                $write_contents = str_replace("\n            'seed'", "", $write_contents);
                 if (!file_exists($write_path)) mkdir($write_path, 0777, true);
-                file_put_contents($write_path  . $file, $write_contents) or die("Unable to write to file!");
+                file_put_contents($write_path . $file, $write_contents) or die("Unable to write to file!");
             }
         }
     }

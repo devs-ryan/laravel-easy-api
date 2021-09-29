@@ -25,6 +25,7 @@ Laravel Easy Api leverages a powerful set of artisan commands to add/remove reso
 #### Setting env variables
 The following optional URL variables can be set in the Laravel .env file:
 - `API_TOKEN` (will be sent with all requests to verify authentication Eg. `response = $axios.get('http://my-app-url/easy-api/index?api_token='.token')`)
+- `EASY_ADMIN_BASE_URL` (Change the base URL for your API. Default is `easy-api)
 
 #### Generate a random API_TOKEN
 - TODO

@@ -37,19 +37,10 @@ class AdminController extends Controller
 
         //EasyApi Middleware
         $this->middleware(function ($request, $next) {
-            if (Auth::check()) {
-                if (Auth::user()->is_easy_admin) {
-                    return $next($request);
-                }
-                else {
-                    Auth::logout();
-                    $request->session()->flush();
-                    return redirect('/easy-api/login')
-                        ->with('message', 'Access Denied! Request Easy Api permission to continue.');
-                }
-
+            if ($request->has('api_token') && $request->api_token == env('API_TOKEN', -1)) {
+                return $next($request);
             }
-            return redirect('/easy-api/login');
+            return abort(403);
         });
     }
 
@@ -60,19 +51,9 @@ class AdminController extends Controller
      */
     public function home()
     {
-        $nav_items = $this->helperService->getModelsForNav();
-        $pages = $this->helperService->getAllPageModels();
-        $posts = $this->helperService->getAllPostModels();
-        $partials = $this->helperService->getAllPartialModels();
-        $partial_models = $this->helperService->stripParentFromPartials($partials);
-
-        return view('easy-api::home')
-            ->with('nav_items', $nav_items)
-            ->with('pages', $pages)
-            ->with('posts', $posts)
-            ->with('partials', $partials)
-            ->with('partial_models', $partial_models)
-            ->with('title', 'Home');
+        return response()->json([
+            'models' => $this->helperService->getModelsForIndex()
+        ], 200);
     }
 
     /**

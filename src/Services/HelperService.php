@@ -145,7 +145,7 @@ class HelperService
      *
      * @return Array
      */
-    public function getModelsForNav()
+    public function getModelsForIndex()
     {
         $models = [];
         $all_models = $this->getAllModels();
@@ -158,10 +158,53 @@ class HelperService
             }
             //check form match
             $app_model = $pieces[1];
-            $name_space = $pieces[0];
-            $models[$this->convertModelToLink($app_model)] = $app_model;
+            $control_model = "App\\EasyApi\\" . $app_model;
+            $allowed = $control_model::allowed();
+            $link = $this->convertModelToLink($app_model);
+
+            // add to actions
+            $models[$app_model]['actions'] = [
+                'GET' => [
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link,
+                    'fields' => $this->addTypesToFields($control_model::index(), str_replace('.', '\\', $model))
+                ]
+            ];
+            if (in_array('create', $allowed)) {
+                $models[$app_model]['actions']['POST'] = [
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link,
+                    'fields' => $this->addTypesToFields($control_model::create(), str_replace('.', '\\', $model))
+                ];
+            }
+            if (in_array('update', $allowed)) {
+                $models[$app_model]['actions']['PUT/PATCH'] = [
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}',
+                    'fields' => $this->addTypesToFields($control_model::update(), str_replace('.', '\\', $model))
+                ];
+            }
+            if (in_array('delete', $allowed)) {
+                $models[$app_model]['actions']['DELETE'] = [
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}'
+                ];
+            }
         }
         return $models;
+    }
+
+    /**
+     * Helper for Above function, adds types to fields
+     *
+     * @param [type] $fields
+     * @param [type] $model
+     * @return array
+     */
+    private function addTypesToFields($fields, $model) {
+        $results = [];
+
+        foreach($fields as $field) {
+            $results[$field] = self::inputType($field, $model);
+        }
+
+        return $results;
     }
 
     /**
