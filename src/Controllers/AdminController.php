@@ -51,9 +51,7 @@ class AdminController extends Controller
      */
     public function home()
     {
-        return response()->json([
-            'models' => $this->helperService->getModelsForIndex()
-        ], 200);
+        return response()->json($this->helperService->getModelsForIndex(), 200);
     }
 
     /**
