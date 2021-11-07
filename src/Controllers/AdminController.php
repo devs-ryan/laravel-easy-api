@@ -67,21 +67,14 @@ class AdminController extends Controller
         $url_model = $model;
         $model_path = $this->helperService->convertUrlModel($url_model);
         $model = $this->helperService->stripPathFromModel($model_path);
-        $nav_items = $this->helperService->getModelsForNav();
-        $partials = $this->helperService->getAllPartialModels();
-        $partial_models = $this->helperService->stripParentFromPartials($partials);
         $appModel = "App\\EasyApi\\" . $model;
-        $index_columns = $appModel::index();
-        $allowed = $appModel::allowed();
-        $parent_id = ($request->parent_id && ctype_digit($request->parent_id) && intval($request->parent_id) > 0)
-            ? $request->parent_id : null;
 
         //get data
         $check_model = $model_path::first();
         if ($check_model && $check_model->id)
             $data = $model_path::orderByDesc('id');
-        else if ($check_model && $check_model->create_at)
-            $data = $model_path::orderByDesc('create_at');
+        else if ($check_model && $check_model->created_at)
+            $data = $model_path::orderByDesc('created_at');
         else $data = $model_path::query();
 
         // files
@@ -110,29 +103,13 @@ class AdminController extends Controller
             $data = $data->where($filter, 'LIKE', "%$value%");
         }
 
-        //apply parent id filter
-        if ($request->has('parent_id')) {
-            $parent = $this->helperService->findParent($model);
-            $relationship_column_name = $this->helperService->findParentIdColumnName($parent, $nav_items);
-            $data = $data->where($relationship_column_name, $request->parent_id);
-        }
-
         //paginate
         $data = $data->paginate(50);
 
-        return view('easy-api::index')
-            ->with('data', $data)
-            ->with('model', $model)
-            ->with('model_path', $model_path)
-            ->with('nav_items', $nav_items)
-            ->with('partials', $partials)
-            ->with('partial_models', $partial_models)
-            ->with('title', 'Index')
-            ->with('index_columns', $index_columns)
-            ->with('allowed', $allowed)
-            ->with('url_model', $url_model)
-            ->with('file_fields', $file_fields)
-            ->with('parent_id', $parent_id);
+        // add file fields
+        $data['file_fields'] = $file_fields;
+
+        return response()->json($data, 200);
     }
 
     /**
