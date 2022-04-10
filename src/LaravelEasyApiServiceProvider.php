@@ -22,10 +22,9 @@ class LaravelEasyApiServiceProvider extends ServiceProvider
             $this->commands([
                 Commands\AddModelCommand::class,
                 Commands\RemoveModelCommand::class,
-                Commands\RefreshModelCommand::class,
                 Commands\AddAllCommand::class,
                 Commands\ResetModelsCommand::class,
-                Commands\InitCommand::class
+                Commands\MigrateCMSCommand::class
             ]);
         }
     }

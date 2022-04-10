@@ -21,14 +21,14 @@ class FileService
     /**
      * Template for public model classes
      *
-     * @var class
+     * @var string
      */
     protected $public_model_template;
 
     /**
      * Template for app models list
      *
-     * @var class
+     * @var string
      */
     protected $app_model_list_template;
 
@@ -70,9 +70,6 @@ class FileService
     {
         $this->helperService = new HelperService;
 
-        $path = str_replace('/Services', '', __DIR__).'/FileTemplates/PublicModel.template';
-        $this->public_model_template = file_get_contents($path) or die("Unable to open file!");
-
         $path = str_replace('/Services', '', __DIR__).'/FileTemplates/AppModelList.template';
         $this->app_model_list_template = file_get_contents($path) or die("Unable to open file!");
     }
@@ -102,6 +99,31 @@ class FileService
     {
         $write_path = app_path('EasyApi/AppModelList.php');
         file_put_contents($write_path, $this->app_model_list_template) or die("Unable to write to file!");
+    }
+
+    /**
+     * Import from CMS for AppModelList file
+     *
+     * @return void
+     */
+    public function createAppModelList($models, $partials)
+    {
+        $write_path = app_path('EasyApi/AppModelList.php');
+        $leading_space = '            ';
+        $models_text = '';
+        $partials_text = '';
+
+        foreach($models as $model) {
+            $models_text .= "{$leading_space}'{$model}',\n";
+        }
+
+        foreach($partials as $partial) {
+            $partials_text .= "{$leading_space}'{$partial}',\n";
+        }
+
+        $file_output = str_replace("{$leading_space}//Models Here - Format: Namespace.Model", $models_text, $this->app_model_list_template);
+        $file_output = str_replace("{$leading_space}//Models Here - Format: PageModel.Model || Global.Model", $partials_text, $file_output);
+        file_put_contents($write_path, $file_output) or die("Unable to write to file!");
     }
 
     /**
@@ -209,35 +231,6 @@ class FileService
         $input_lines = file_get_contents($path) or die("Unable to open file!");
         $overwrite_string = preg_replace('/^.*(\.)?'.$model.'\',\n/m', '', $input_lines);
         file_put_contents($path, $overwrite_string) or die("Unable to write to file!");
-    }
-
-    /**
-     * Add Model into app Models
-     *
-     * @param string $model_path
-     * @return void
-     */
-    public function addPublicModel($model_path)
-    {
-        $model = $this->helperService->stripPathFromModel($model_path);
-        $write_path = app_path() . '/EasyApi/' . $model . '.php';
-
-        //get attributes
-        $record = new $model_path;
-        $table = $record->getTable();
-
-        $fields = '';
-        $columns = DB::select('SHOW COLUMNS FROM ' . $table);
-        foreach($columns as $column) {
-            $fields .= "'$column->Field',\n            ";
-        }
-
-        //comment out fields
-        $text = str_replace("{{form_model_fields}}", $this->formFilter($fields), $this->public_model_template);
-        $text = str_replace("{{index_model_fields}}", $this->indexFilter($fields), $text);
-        $text = str_replace("{{model_name}}", $model, $text);
-        $this->createAppDirectory(); //if doesnt exist create public directory
-        file_put_contents($write_path, $text) or die("Unable to write to file!");
     }
 
     /**

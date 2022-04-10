@@ -3,6 +3,7 @@ namespace DevsRyan\LaravelEasyApi\Services;
 
 use App\EasyApi\AppModelList;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Exception;
 use Throwable;
 
@@ -159,33 +160,23 @@ class HelperService
             //check form match
             $app_model = $pieces[1];
             $control_model = "App\\EasyApi\\" . $app_model;
-            $allowed = $control_model::allowed();
             $link = $this->convertModelToLink($app_model);
 
             // add to actions
-            $models[$app_model]['actions'] = [
-                'GET' => [
+            $models[$app_model]['GET'] = [
+                [
+                    'action' => 'index',
+                    'description' => 'List & filter all ' . $app_model . ' resources.',
                     'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link,
+                    'fields' => $this->addTypesToFields($control_model::index(), str_replace('.', '\\', $model))
+                ],
+                [
+                    'action' => 'show',
+                    'description' => 'Show the ' . $app_model . ' that has the matching {id} from the route.',
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}',
                     'fields' => $this->addTypesToFields($control_model::index(), str_replace('.', '\\', $model))
                 ]
             ];
-            if (in_array('create', $allowed)) {
-                $models[$app_model]['actions']['POST'] = [
-                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link,
-                    'fields' => $this->addTypesToFields($control_model::create(), str_replace('.', '\\', $model))
-                ];
-            }
-            if (in_array('update', $allowed)) {
-                $models[$app_model]['actions']['PUT/PATCH'] = [
-                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}',
-                    'fields' => $this->addTypesToFields($control_model::update(), str_replace('.', '\\', $model))
-                ];
-            }
-            if (in_array('delete', $allowed)) {
-                $models[$app_model]['actions']['DELETE'] = [
-                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}'
-                ];
-            }
         }
         return $models;
     }
@@ -274,36 +265,35 @@ class HelperService
         }
     }
 
-    /**
-     * Return all page models added to admin area
-     * Format Model
-     *
-     * @return Array
-     */
-    public function getAllPageModels()
-    {
-        try {
-            return AppModelList::pageModels();
-        }
-        catch (Throwable $t) {
-            throw new Exception('Parse Error: AppModelList.php has been corrupted.');
-        }
-    }
 
     /**
-     * Return all post models added to admin area
-     * Format Model
+     * Add the partial models into the query
      *
-     * @return Array
+     * @param [type] $model
+     * @param [type] $query
+     * @return void
      */
-    public function getAllPostModels()
+    public function appendPartials($model, $query)
     {
-        try {
-            return AppModelList::postModels();
-        }
-        catch (Throwable $t) {
-            throw new Exception('Parse Error: AppModelList.php has been corrupted.');
-        }
+        $appends = [];
+        $partials = null;
+
+        $partials = $this->getPartials($model);
+
+        foreach($partials as $partial) {
+            $append = Str::plural(strtolower($partial));
+            $appends[] = $append;
+                
+            // allow 2 levels deep
+            $partials = $this->getPartials($partial);
+            foreach($partials as $partial) {
+                $append_secondary = Str::plural(strtolower($partial));
+                $appends[] = $append . '.' . $append_secondary;
+
+            }
+        }     
+        
+        return $query->with($appends);
     }
 
     /**

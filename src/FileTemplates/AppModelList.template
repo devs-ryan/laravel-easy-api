@@ -17,30 +17,6 @@ class AppModelList
     }
 
     /**
-     * Return array of Page type models
-     *
-     * @return Array
-     */
-    public static function pageModels()
-    {
-        return [
-            //Models Here - Format: Model
-        ];
-    }
-
-    /**
-     * Return array of Post type models
-     *
-     * @return Array
-     */
-    public static function postModels()
-    {
-        return [
-            //Models Here - Format: Model
-        ];
-    }
-
-    /**
      * Return array of Partial type models
      *
      * @return Array

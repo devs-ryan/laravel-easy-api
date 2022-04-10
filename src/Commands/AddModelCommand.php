@@ -140,15 +140,6 @@ class AddModelCommand extends Command
             $this->info('Model added to EasyApi models list file..');
         }
 
-        //check if App file exists already (create otherwise)
-        if ($this->FileService->checkPublicModelExists($model_path)) {
-            $this->info('\App\EasyApi public file already exists..');
-        }
-        else {
-            $this->FileService->addPublicModel($model_path);
-            $this->info('\App\EasyApi public file created..');
-        }
-
         $this->info('Model added successfully!');
     }
 

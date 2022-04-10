@@ -20,7 +20,7 @@ class AddAllCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Add all models within app to the Easy Api GUI';
+    protected $description = 'Add all models within app to the Easy Api';
 
     /**
      * Exit Commands.
@@ -101,14 +101,6 @@ class AddAllCommand extends Command
                 else {
                     $this->FileService->addModelToList($namespace, $model);
                     $this->info('Model added to EasyApi models list file..');
-                }
-                //check if App file exists already (create otherwise)
-                if ($this->FileService->checkPublicModelExists($model_path)) {
-                    $this->info('\App\EasyApi public file already exists..');
-                }
-                else {
-                    $this->FileService->addPublicModel($model_path);
-                    $this->info('\App\EasyApi public file created..');
                 }
 
                 $this->info("\nModel `" . $model . "` added successfully!\n");
