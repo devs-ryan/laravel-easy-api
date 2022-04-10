@@ -76,11 +76,7 @@ class AdminController extends Controller
 
         //get data
         $check_model = $model_path::first();
-        if ($check_model && $check_model->id)
-            $data = $model_path::orderByDesc('id');
-        else if ($check_model && $check_model->created_at)
-            $data = $model_path::orderByDesc('created_at');
-        else $data = $model_path::query();
+        $data = $model_path::query();
 
         //apply filters
         foreach($request->except(['parent_id']) as $filter => $value) {
@@ -107,6 +103,11 @@ class AdminController extends Controller
 
         // append partials
         $data = $this->helperService->appendPartials($model, $data);
+
+        // allow sorting
+        if ($request->has('sort_by')) {
+            $data = $this->helperService->sortResults($check_model, $request->sort_by, $data);
+        }
 
         //paginate
         $data = $data->paginate(50);

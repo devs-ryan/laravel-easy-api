@@ -262,6 +262,20 @@ class HelperService
         }
     }
 
+    public function sortResults($check_model, $sort_by, $query)
+    {
+        $direction = 'asc';
+        if (!$check_model || strlen($sort_by) == 0) return '$query';
+
+        if ($sort_by[0] == '-') {
+            $direction = 'desc';
+            $sort_by = ltrim($sort_by, '-');
+        }
+
+        if (! array_key_exists($sort_by, $check_model->getAttributes())) return '$query';
+
+        return $query->orderBy($sort_by, $direction);
+    }
 
     /**
      * Add the partial models into the query
