@@ -234,19 +234,6 @@ class FileService
     }
 
     /**
-     * Remove Model from app Models
-     *
-     * @param string $model_path
-     * @return void
-     */
-    public function removePublicModel($model_path)
-    {
-        $model = $this->helperService->stripPathFromModel($model_path);
-        $write_path = app_path() . '/EasyApi/' . $model . '.php';
-        unlink($write_path);
-    }
-
-    /**
      * Copy All files from EasyAdmin to to EasyApi and change namespace
      *
      * @return void

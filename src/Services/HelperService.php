@@ -159,7 +159,6 @@ class HelperService
             }
             //check form match
             $app_model = $pieces[1];
-            $control_model = "App\\EasyApi\\" . $app_model;
             $link = $this->convertModelToLink($app_model);
 
             // add to actions
@@ -167,14 +166,12 @@ class HelperService
                 [
                     'action' => 'index',
                     'description' => 'List & filter all ' . $app_model . ' resources.',
-                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link,
-                    'fields' => $this->addTypesToFields($control_model::index(), str_replace('.', '\\', $model))
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link
                 ],
                 [
                     'action' => 'show',
                     'description' => 'Show the ' . $app_model . ' that has the matching {id} from the route.',
-                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}',
-                    'fields' => $this->addTypesToFields($control_model::index(), str_replace('.', '\\', $model))
+                    'route' => '/' . env('EASY_API_BASE_URL', 'easy-api') . '/' . $link . '/{id}'
                 ]
             ];
         }

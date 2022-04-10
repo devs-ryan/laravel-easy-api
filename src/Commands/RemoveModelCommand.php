@@ -100,14 +100,6 @@ class RemoveModelCommand extends Command
         else {
             $this->info('Model not found in EasyApi models list, checking for \App\EasyApi file..');
         }
-        //check if App file exists
-        if ($this->FileService->checkPublicModelExists($model_path)) {
-            $this->FileService->removePublicModel($model_path);
-            $this->info('\App\EasyApi public file removed..');
-        }
-        else {
-            $this->info('\App\EasyApi public file not found..');
-        }
 
         $this->info('Model removed successfully!');
     }
